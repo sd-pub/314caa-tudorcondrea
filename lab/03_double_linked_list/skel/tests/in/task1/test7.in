@@ -1,0 +1,10 @@
+create_int
+add 0 1
+add 0 2
+add 0 3
+add 0 4
+remove 0
+print
+remove 10
+print
+free

@@ -1,0 +1,7 @@
+create_int
+add 5 10
+add 6 15
+add 0 30
+add 0 5
+print
+free

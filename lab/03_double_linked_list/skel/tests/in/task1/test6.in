@@ -1,0 +1,10 @@
+create_str
+add 0 Teo,
+add 1 Vio
+add 2 si
+add 3 Costel
+remove 3
+print
+add 3 Gigel
+print
+free
