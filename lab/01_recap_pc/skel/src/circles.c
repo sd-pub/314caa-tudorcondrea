@@ -14,7 +14,8 @@ int distsq(int x1, int y1, int x2, int y2)
 int main()
 {
     int n = 0, count = 0, i, j;
-    cerc * cercuri = (cerc *)malloc(n * sizeof(cerc));
+    cerc * cercuri = malloc(n * sizeof(cerc));
+    DIE(cercuri == NULL, "nu au putut fi retinute cercurile");
     scanf("%d", &n);
     for (i = 0; i < n; i++)
         scanf("%d%d%d", &cercuri[i].x, &cercuri[i].y, &cercuri[i].r);

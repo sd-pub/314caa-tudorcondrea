@@ -1,14 +1,19 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "utils.h"
 
 int main()
 {
     int **mat, n, m;
     scanf("%d%d", &n, &m);
-    mat = (int **)malloc(sizeof(int *) * n);
+    mat = malloc(sizeof(int *) * n);
+    DIE(mat == NULL, "nu a putut fi alocata matricea\n");
     int i, j;
     for(i = 0; i < n; i++)
-        mat[i] = (int *)malloc(sizeof(int) * m);
+    {
+        mat[i] = malloc(sizeof(int) * m);
+        DIE(mat[i] == NULL, "nu a putut fi alocata matricea\n");
+    }
     for (i = 0; i < n; i++)
         for (j = 0; j < m; j++)
             scanf("%d", &mat[i][j]);
