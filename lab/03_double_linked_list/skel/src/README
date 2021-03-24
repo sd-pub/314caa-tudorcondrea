@@ -1,0 +1,6 @@
+1)  create - o lista goala alocata si initializata doar marimea datelor si numarul de elemente
+    get - fiind circulara, daca n > size putem lua restul impartirii n / size si ajungem in acelasi loc
+    add - cazuri particulare pentru size = 0, sau daca e primul nod iar restul merg pe caz general, legam nodul nou si rearanjam legaturile vechi la nodul nou
+    delete - rearanjeaza legaturile si pastreaza un pointer catre nodul scos
+    free - scoate un nod, merge mai departe si dezaloca pe cel lasat in urma
+2)  merg inceput cu un pointer si la sfarsit cu altul si merg cu ambele catre mijloc cautand pentru diferente intre caractere
