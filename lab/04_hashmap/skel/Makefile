@@ -21,6 +21,6 @@ run:
 	./TestHashtable
 
 clean:
-	rm src/*.o
-	rm TestHashtable
+	rm -f src/*.o
+	rm -f TestHashtable
 
