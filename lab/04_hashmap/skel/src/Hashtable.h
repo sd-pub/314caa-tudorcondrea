@@ -8,48 +8,64 @@
 #include "LinkedList.h"
 
 struct info {
-    void *key;
-    void *value;
+	void *key;
+	void *value;
 };
 
-struct Hashtable {
-    struct LinkedList *buckets; /* Array de liste simplu-inlantuite. */
-    int size; /* Nr. total de noduri existente curent in toate bucket-urile. */
-    int hmax; /* Nr. de bucket-uri. */
-    /* (Pointer la) Functie pentru a calcula valoarea hash asociata cheilor. */
-    unsigned int (*hash_function)(void*);
-    /* (Pointer la) Functie pentru a compara doua chei. */
-    int (*compare_function)(void*, void*);
+typedef struct hashtable_t hashtable_t;
+struct hashtable_t {
+	linked_list_t **buckets; /* Array de liste simplu-inlantuite. */
+	/* Nr. total de noduri existente curent in toate bucket-urile. */
+	unsigned int size;
+	unsigned int hmax; /* Nr. de bucket-uri. */
+	/* (Pointer la) Functie pentru a calcula valoarea hash asociata cheilor. */
+	unsigned int (*hash_function)(void*);
+	/* (Pointer la) Functie pentru a compara doua chei. */
+	int (*compare_function)(void*, void*);
 };
 
-void init_ht(struct Hashtable *ht, int hmax, unsigned int (*hash_function)(void*), int (*compare_function)(void*, void*));
+hashtable_t *
+ht_create(unsigned int hmax, unsigned int (*hash_function)(void*),
+		int (*compare_function)(void*, void*));
 
-void put(struct Hashtable *ht, void *key, int key_size_bytes, void *value);
+void
+ht_put(hashtable_t *ht, void *key, unsigned int key_size,
+	void *value, unsigned int value_size);
 
-void* get(struct Hashtable *ht, void *key);
+void *
+ht_get(hashtable_t *ht, void *key);
 
-int has_key(struct Hashtable *ht, void *key);
+int
+ht_has_key(hashtable_t *ht, void *key);
 
-void remove_ht_entry(struct Hashtable *ht, void *key);
+void
+ht_remove_entry(hashtable_t *ht, void *key);
 
-int get_ht_size(struct Hashtable *ht);
+unsigned int
+ht_get_size(hashtable_t *ht);
 
-int get_ht_hmax(struct Hashtable *ht);
+unsigned int
+ht_get_hmax(hashtable_t *ht);
 
-void free_ht(struct Hashtable *ht);
+void
+ht_free(hashtable_t *ht);
 
 /*
  * Functii de comparare a cheilor:
  */
-int compare_function_ints(void *a, void *b);
+int
+compare_function_ints(void *a, void *b);
 
-int compare_function_strings(void *a, void *b);
+int
+compare_function_strings(void *a, void *b);
 
 /*
  * Functii de hashing:
  */
-unsigned int hash_function_int(void *a);
+unsigned int
+hash_function_int(void *a);
 
-unsigned int hash_function_string(void *a);
+unsigned int
+hash_function_string(void *a);
 
 #endif
