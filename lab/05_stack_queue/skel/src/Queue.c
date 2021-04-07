@@ -7,11 +7,13 @@ queue_t *
 q_create(unsigned int data_size, unsigned int max_size)
 {
 	queue_t *queue = malloc(sizeof(queue_t));
+	die(!queue, "malloc queue");
 	queue->data_size = data_size;
 	queue->max_size = max_size;
 	queue->size = 0;
 	// Bufferul e folosit ca un vector de orice tip de data
 	queue->buff = malloc(max_size * data_size);
+	DIE(!queue->buff, "buffer malloc");
 	queue->read_idx = 0;
 	queue->write_idx = 0;
 	return queue;

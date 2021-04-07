@@ -7,6 +7,7 @@ stack_t *
 st_create(unsigned int data_size)
 {
 	stack_t *stack = malloc(sizeof(stack_t));
+	DIE(!stack, "stack malloc");
 	stack->list = ll_create(data_size);
 	return stack;
 }
