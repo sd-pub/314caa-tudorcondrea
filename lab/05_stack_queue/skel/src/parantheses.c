@@ -42,5 +42,6 @@ int main()
     {
         printf("Este corecta parantezarea\n");
     }
+    st_free(stack);
     return 0;    
 }
