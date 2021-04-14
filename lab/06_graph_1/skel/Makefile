@@ -1,33 +1,33 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic -ansi
-DEBUG=-g -ggdb -O0 -march=native -std=c99
+CFLAGS=-Wall -Wextra -pedantic -std=c99
+DEBUG=-g -ggdb -O0 -march=native
 
 build: Test
 
-Test: src/Test.o src/Queue_unlinked.o src/Stack_unlinked.o src/LinkedList.o src/MatrixGraph_unlinked.o src/ListGraph_unlinked.o
-	$(CC) $(CFLAGS) $(DEBUG) src/Test.o src/Queue_unlinked.o src/Stack_unlinked.o src/LinkedList.o src/MatrixGraph_unlinked.o src/ListGraph_unlinked.o -o Test
+Test: src/Test.o src/Queue.o src/Stack.o src/LinkedList.o src/MatrixGraph.o src/ListGraph.o
+	$(CC) $(CFLAGS) $(DEBUG) $^ -o $@
 
-src/MatrixGraph_unlinked.o: src/MatrixGraph.c src/MatrixGraph.h
-	$(CC) $(CFLAGS) $(DEBUG) src/MatrixGraph.c -c -o src/MatrixGraph_unlinked.o
 
-src/ListGraph_unlinked.o: src/ListGraph.c src/ListGraph.h
-	$(CC) $(CFLAGS) $(DEBUG) src/ListGraph.c -c -o src/ListGraph_unlinked.o
+src/MatrixGraph.o: src/MatrixGraph.c src/MatrixGraph.h
+	$(CC) $(CFLAGS) $(DEBUG) -c $< -o $@
 
-src/Queue_unlinked.o: src/Queue.h src/Queue.c
-	$(CC) $(CFLAGS) $(DEBUG) src/Queue.c -c -o src/Queue_unlinked.o
+src/ListGraph.o: src/ListGraph.c src/ListGraph.h
+	$(CC) $(CFLAGS) $(DEBUG) -c $< -o $@
 
-src/Stack_unlinked.o: src/Stack.h src/Stack.c
-	$(CC) $(CFLAGS) $(DEBUG) src/Stack.c -c -o src/Stack_unlinked.o
+src/Queue.o: src/Queue.c src/Queue.h
+	$(CC) $(CFLAGS) $(DEBUG) -c $< -o $@
 
-src/LinkedList.o: src/LinkedList.h src/LinkedList.c
-	$(CC) $(CFLAGS) $(DEBUG) src/LinkedList.c -c -o src/LinkedList.o
+src/Stack.o: src/Stack.c src/Stack.h
+	$(CC) $(CFLAGS) $(DEBUG) -c $< -o $@
+
+src/LinkedList.o: src/LinkedList.c src/LinkedList.h
+	$(CC) $(CFLAGS) $(DEBUG) -c $< -o $@
 
 src/Test.o: src/Test.c
-	$(CC) $(CFLAGS) $(DEBUG) src/Test.c -c -o src/Test.o
+	$(CC) $(CFLAGS) $(DEBUG) -c $^ -o $@
 
 run:
 	./Test
 
 clean:
-	rm src/*.o
-	rm Test
+	rm -f src/*.o Test
