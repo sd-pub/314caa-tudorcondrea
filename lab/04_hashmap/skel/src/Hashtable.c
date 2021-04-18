@@ -179,7 +179,8 @@ ht_remove_entry(hashtable_t *ht, void *key)
 			free(p);
 			return;
 		}
-		q = q->next;	
+		q = q->next;
+		count++;
 	}
 	ht->size--;
 }
