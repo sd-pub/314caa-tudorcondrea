@@ -1,72 +1,116 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ListGraph.h"
+#include "utils.h"
 
-void init_list_graph(ListGraph *graph, int nodes) {
-    graph->nodes = nodes;
-    graph->neighbors = malloc(nodes * sizeof(LinkedList));
-
-    if (graph->neighbors == NULL) {
-        perror("Not enough memory to initialize the adjacency list!");
-        exit(-1);
-    }
-
-    for (int i = 0; i < nodes; ++i) {
-        graph->neighbors[i] = malloc(sizeof(LinkedList));
-
-        if (graph->neighbors[i] == NULL) {
-            perror("Not enough memory to initialize the adjacency list!");
-            exit(-1);
-        }
-        init_list(graph->neighbors[i]);
-    }
+static int is_node_in_graph(int n, int nodes)
+{
+	return n >= 0 && n < nodes;
 }
 
-void add_edge_list_graph(ListGraph *graph, int src, int *dest) {
-    add_nth_node(graph->neighbors[src], (1 <<30), dest);
+list_graph_t*
+lg_create(int nodes)
+{
+	int i;
+
+	list_graph_t *g = malloc(sizeof(*g));
+	DIE(!g, "malloc graph failed");
+
+	g->neighbors = malloc(nodes * sizeof(*g->neighbors));
+	DIE(!g->neighbors, "malloc neighbours failed");
+
+	for (i = 0; i != nodes; ++i)
+		g->neighbors[i] = ll_create(sizeof(int));
+
+	g->nodes = nodes;
+
+	return g;
 }
 
-int has_edge_list_graph(ListGraph *graph, int src, int dest) {
-    Node *head = graph->neighbors[src]->head;
-    int crt_node;
+void
+lg_add_edge(list_graph_t* graph, int src, int dest)
+{
+	if (
+		!graph || !graph->neighbors
+		|| !is_node_in_graph(src, graph->nodes)
+		|| !is_node_in_graph(dest, graph->nodes)
+	)
+		return;
 
-    while (head != NULL) {
-        crt_node = *(int *)head->data;
-
-        if (crt_node == dest) {
-            return 1;
-        }
-        head = head->next;
-    }
-
-    return 0;
+	ll_add_nth_node(graph->neighbors[src], 0, &dest);
 }
 
-LinkedList* get_neighbours_list_graph(ListGraph *graph, int node) {
-    return graph->neighbors[node];
+static ll_node_t *find_node(linked_list_t *ll, int node, unsigned int *pos)
+{
+	ll_node_t *crt = ll->head;
+	unsigned int i;
+
+	for (i = 0; i != ll->size; ++i) {
+		if (node == *(int *)crt->data) {
+			*pos = i;
+			return crt;
+		}
+
+		crt = crt->next;
+	}
+
+	return NULL;
 }
 
-void remove_edge_list_graph(ListGraph *graph, int src, int dest) {
-    Node *head = graph->neighbors[src]->head;
-    int node_index = 0;
-    int crt_node = 0;
+int
+lg_has_edge(list_graph_t* graph, int src, int dest)
+{
+	unsigned int pos;
 
-    while (head != NULL) {
-        crt_node = *(int *)head->data;
+	if (
+		!graph || !graph->neighbors
+		|| !is_node_in_graph(src, graph->nodes)
+		|| !is_node_in_graph(dest, graph->nodes)
+	)
+		return 0;
 
-        if (crt_node == dest) {
-            remove_nth_node(graph->neighbors[src], node_index);
-            return;
-        }
-        head = head->next;
-        ++node_index;
-    }
+	return find_node(graph->neighbors[src], dest, &pos) != NULL;
 }
 
-void clear_list_graph(ListGraph *graph) {
-    for (int i = 0; i < graph->nodes; ++i) {
-        free_list(&graph->neighbors[i]);
-    }
-    free(graph->neighbors);
+linked_list_t*
+lg_get_neighbours(list_graph_t* graph, int node)
+{
+	if (
+		!graph || !graph->neighbors
+		|| !is_node_in_graph(node, graph->nodes)
+	)
+		return NULL;
+
+	return graph->neighbors[node];
+}
+
+void
+lg_remove_edge(list_graph_t* graph, int src, int dest)
+{
+	unsigned int pos;
+
+	if (
+		!graph || !graph->neighbors
+		|| !is_node_in_graph(src, graph->nodes)
+		|| !is_node_in_graph(dest, graph->nodes)
+	)
+		return;
+
+	if (!find_node(graph->neighbors[src], dest, &pos))
+		return;
+
+	ll_remove_nth_node(graph->neighbors[src], pos);
+}
+
+void
+lg_free(list_graph_t* graph)
+{
+	int i;
+
+	for (i = 0; i != graph->nodes; ++i)
+		ll_free(graph->neighbors + i);
+	
+	free(graph->neighbors);
+	free(graph);
 }
