@@ -1,34 +1,40 @@
-#ifndef __LINKEDLIST_H__
-#define __LINKEDLIST_H__
+#ifndef LINKED_LIST_H_
+#define LINKED_LIST_H_
 
-struct Node {
-    void *data; /* Pentru ca datele stocate sa poata avea orice tip, folosim un pointer la void. */
-    struct Node *next;
+typedef struct ll_node_t ll_node_t;
+struct ll_node_t
+{
+    void* data;
+    ll_node_t* next;
 };
 
-struct LinkedList {
-    struct Node *head;
-    struct Node *tail;
-    int size;
+typedef struct linked_list_t linked_list_t;
+struct linked_list_t
+{
+    ll_node_t* head;
+    unsigned int data_size;
+    unsigned int size;
 };
 
-void init_list(struct LinkedList *list);
+linked_list_t*
+ll_create(unsigned int data_size);
 
-/*
- * Acestea sunt functiile pe care trebuie sa le implementam.
- * Implementarea acestora se va face in LinkedList.c .
- */
+void
+ll_add_nth_node(linked_list_t* list, unsigned int n, const void* data);
 
-void add_nth_node(struct LinkedList *list, int n, void *new_data);
+ll_node_t*
+ll_remove_nth_node(linked_list_t* list, unsigned int n);
 
-struct Node* remove_nth_node(struct LinkedList *list, int n);
+unsigned int
+ll_get_size(linked_list_t* list);
 
-int get_size(struct LinkedList *list);
+void
+ll_free(linked_list_t** pp_list);
 
-void free_list(struct LinkedList **list);
+void
+ll_print_int(linked_list_t* list);
 
-void print_int_linkedlist(struct LinkedList *list);
+void
+ll_print_string(linked_list_t* list);
 
-void print_string_linkedlist(struct LinkedList *list);
-
-#endif /* __LINKEDLIST_H__ */
+#endif  /* LINKED_LIST_H_ */

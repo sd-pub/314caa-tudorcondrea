@@ -1,0 +1,10 @@
+Stack:
+    foloseste o lista unde cel mai recent adaugat nod e capul listei
+    astfel avem acces la informatiile necesare in O(1)
+Queue:
+    foloseste un vector general si circular si pointer magic
+    vectorul are nmax pozitii cu data_size bytes disponibili
+    problema: fiind un vector de tip void* nu putem dereferentia clasic cu paranteze patrate si nici aritmetica cu pointeri nu putem face neavand un size definit
+    solutia: il tratam ca pe un string deoarece acesta merge cu cate 1 byte o data_size
+             pentru jumpuri mai mari de 1 byte (ex: int 4 bytes), inmultim indexul cu data_size
+    pentru a mentine O(1) la accesari, in loc sa tragem toata coada mai in fata la fiecare dequeue, ii lasam acolo si retinem indecsii de scriere si citire

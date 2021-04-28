@@ -1,0 +1,4 @@
+b_tree_insert - face un bfs si umple primul loc gol, astfel facand un arbore cu numar minim de etaje
+parcurgeri - functie recursiva care afiseaza continutul nodurilor, conteaza doar unde pui afisarea in functie de tipul de parcurgere
+task2 - fac dfs si propag valoarea nodurilor parinte ca dupa in frunze sa se afle suma nodurilor
+      - repet dfs si unde se regaseste maximul sumelor gasit anterior, afisez drumul

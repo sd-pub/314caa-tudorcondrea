@@ -3,21 +3,28 @@
 
 #include "LinkedList.h"
 
-typedef struct {
-    LinkedList **neighbors;       /* Listele de adiacenta ale grafului */
-    int nodes;                    /* Numarul de noduri din graf. */
-} ListGraph;
+typedef struct
+{
+	linked_list_t** neighbors; /* Listele de adiacenta ale grafului */
+	int nodes;                 /* Numarul de noduri din graf. */
+} list_graph_t;
 
-void init_list_graph(ListGraph *graph, int nodes);
+list_graph_t*
+lg_create(int nodes);
 
-void add_edge_list_graph(ListGraph *graph, int src, int *dest);
+void
+lg_add_edge(list_graph_t* graph, int src, int dest);
 
-int has_edge_list_graph(ListGraph *graph, int src, int dest);
+int
+lg_has_edge(list_graph_t* graph, int src, int dest);
 
-LinkedList* get_neighbours_list_graph(ListGraph *graph, int node);
+linked_list_t*
+lg_get_neighbours(list_graph_t* graph, int node);
 
-void remove_edge_list_graph(ListGraph *graph, int src, int dest);
+void
+lg_remove_edge(list_graph_t* graph, int src, int dest);
 
-void clear_list_graph(ListGraph *graph);
+void
+lg_free(list_graph_t* graph);
 
 #endif /* __LISTGRAPH_H__ */

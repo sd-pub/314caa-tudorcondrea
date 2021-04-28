@@ -1,19 +1,25 @@
 #ifndef __MATRIXGRAPH_H__
 #define __MATRIXGRAPH_H__
 
-typedef struct {
-    int **matrix;       /* Matricea de adiacenta a grafului */
-    int nodes;          /* Numarul de noduri din graf. */
-} MatrixGraph;
+typedef struct
+{
+	int** matrix; /* Matricea de adiacenta a grafului */
+	int nodes;    /* Numarul de noduri din graf. */
+} matrix_graph_t;
 
-void init_matrix_graph(MatrixGraph *graph, int nodes);
+matrix_graph_t*
+mg_create(int nodes);
 
-void add_edge_matrix_graph(MatrixGraph *graph, int src, int dest);
+void
+mg_add_edge(matrix_graph_t* graph, int src, int dest);
 
-int has_edge_matrix_graph(MatrixGraph *graph, int src, int dest);
+int
+mg_has_edge(matrix_graph_t* graph, int src, int dest);
 
-void remove_edge_matrix_graph(MatrixGraph *graph, int src, int dest);
+void
+mg_remove_edge(matrix_graph_t* graph, int src, int dest);
 
-void clear_matrix_graph(MatrixGraph *graph);
+void
+mg_free(matrix_graph_t* graph);
 
 #endif /* __MATRIXGRAPH_H__ */
