@@ -1,26 +1,36 @@
-#ifndef __STACK_H__
-#define __STACK_H__
+#ifndef STACK_H_
+#define STACK_H_
 
 #include "LinkedList.h"
 
-typedef struct {
-    LinkedList *list;
-} Stack;
+typedef struct stack_t stack_t;
+struct stack_t
+{
+	struct linked_list_t* list;
+};
 
-void init_stack(Stack *stack);
+stack_t*
+st_create(unsigned int data_size);
 
-int get_size_stack(Stack *stack);
+unsigned int
+st_get_size(stack_t* st);
 
-int is_empty_stack(Stack *stack);
+unsigned int
+st_is_empty(stack_t* st);
 
-void* peek_stack(Stack *stack);
+void*
+st_peek(stack_t* st);
 
-void pop_stack(Stack *stack);
+void
+st_pop(stack_t* st);
 
-void push_stack(Stack *stack, void *new_data);
+void
+st_push(stack_t* st, void* new_data);
 
-void clear_stack(Stack *stack);
+void
+st_clear(stack_t* st);
 
-void purge_stack(Stack *stack);
+void
+st_free(stack_t* st);
 
-#endif /* __STACK_H__ */
+#endif /* STACK_H_ */

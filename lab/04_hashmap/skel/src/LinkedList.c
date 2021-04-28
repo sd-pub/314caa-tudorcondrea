@@ -1,27 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "LinkedList.h"
+#include "utils.h"
 
-/*
- * Functie care trebuie apelata dupa alocarea unei liste simplu inlantuite, pentru a o initializa.
- * (Setare valori initiale pentru campurile specifice structurii LinkedList).
- */
-void init_list(struct LinkedList *list) {
-    /* TODO */
-    list->head = NULL;
-    list->size = 0;
+linked_list_t *
+ll_create(unsigned int data_size)
+{
+    linked_list_t* ll;
+
+    ll = malloc(sizeof(*ll));
+    DIE(ll == NULL, "linked_list malloc");
+
+    ll->head = NULL;
+    ll->data_size = data_size;
+    ll->size = 0;
+
+    return ll;
 }
 
 /*
- * Pe baza datelor trimise prin pointerul new_data, se creeaza un nou nod care e adaugat pe pozitia n a listei
- * reprezentata de pointerul list. Pozitiile din lista sunt indexate incepand cu 0 (i.e. primul nod din lista se afla
- * pe pozitia n=0). Daca n >= nr_noduri, noul nod se adauga la finalul listei.
+ * Pe baza datelor trimise prin pointerul new_data, se creeaza un nou nod care e
+ * adaugat pe pozitia n a listei reprezentata de pointerul list. Pozitiile din
+ * lista sunt indexate incepand cu 0 (i.e. primul nod din lista se afla pe
+ * pozitia n=0). Daca n >= nr_noduri, noul nod se adauga la finalul listei. Daca
+ * n < 0, eroare.
  */
-void add_nth_node(struct LinkedList *list, int n, void *new_data) {
-    /* TODO */
-    struct Node *prev, *curr;
-    struct Node *new_node;
+void
+ll_add_nth_node(linked_list_t* list, unsigned int n, const void* new_data)
+{
+    ll_node_t *prev, *curr;
+    ll_node_t* new_node;
 
     if (list == NULL) {
         return;
@@ -42,8 +52,12 @@ void add_nth_node(struct LinkedList *list, int n, void *new_data) {
         --n;
     }
 
-    new_node = (struct Node*)malloc(sizeof(struct Node));
-    new_node->data = new_data;
+    new_node = malloc(sizeof(*new_node));
+    DIE(new_node == NULL, "new_node malloc");
+    new_node->data = malloc(list->data_size);
+    DIE(new_node->data == NULL, "new_node->data malloc");
+    memcpy(new_node->data, new_data, list->data_size);
+
     new_node->next = curr;
     if (prev == NULL) {
         /* Adica n == 0. */
@@ -56,15 +70,17 @@ void add_nth_node(struct LinkedList *list, int n, void *new_data) {
 }
 
 /*
- * Elimina nodul de pe pozitia n din lista al carei pointer este trimis ca parametru.
- * Pozitiile din lista se indexeaza de la 0 (i.e. primul nod din lista se afla pe pozitia n=0). Daca n >= nr_noduri - 1,
- * se elimina nodul de la finalul listei.
- * Functia intoarce un pointer spre acest nod proaspat eliminat din lista.
- * Este responsabilitatea apelantului sa elibereze memoria acestui nod.
+ * Elimina nodul de pe pozitia n din lista al carei pointer este trimis ca
+ * parametru. Pozitiile din lista se indexeaza de la 0 (i.e. primul nod din
+ * lista se afla pe pozitia n=0). Daca n >= nr_noduri - 1, se elimina nodul de
+ * la finalul listei. Daca n < 0, eroare. Functia intoarce un pointer spre acest
+ * nod proaspat eliminat din lista. Este responsabilitatea apelantului sa
+ * elibereze memoria acestui nod.
  */
-struct Node* remove_nth_node(struct LinkedList *list, int n) {
-    /* TODO */
-    struct Node *prev, *curr;
+ll_node_t *
+ll_remove_nth_node(linked_list_t* list, unsigned int n)
+{
+    ll_node_t *prev, *curr;
 
     if (list == NULL) {
         return NULL;
@@ -77,8 +93,6 @@ struct Node* remove_nth_node(struct LinkedList *list, int n) {
     /* n >= list->size - 1 inseamna eliminarea nodului de la finalul listei. */
     if (n > list->size - 1) {
         n = list->size - 1;
-    } else if (n < 0) {
-        return NULL;
     }
 
     curr = list->head;
@@ -102,10 +116,12 @@ struct Node* remove_nth_node(struct LinkedList *list, int n) {
 }
 
 /*
- * Functia intoarce numarul de noduri din lista al carei pointer este trimis ca parametru.
+ * Functia intoarce numarul de noduri din lista al carei pointer este trimis ca
+ * parametru.
  */
-int get_size(struct LinkedList *list) {
-    /* TODO */
+unsigned int
+ll_get_size(linked_list_t* list)
+{
     if (list == NULL) {
         return -1;
     }
@@ -114,20 +130,23 @@ int get_size(struct LinkedList *list) {
 }
 
 /*
- * Procedura elibereaza memoria folosita de toate nodurile din lista, iar la sfarsit, elibereaza memoria folosita
- * de structura lista si actualizeaza la NULL valoarea pointerului la care pointeaza argumentul (argumentul este un
+ * Procedura elibereaza memoria folosita de toate nodurile din lista, iar la
+ * sfarsit, elibereaza memoria folosita de structura lista si actualizeaza la
+ * NULL valoarea pointerului la care pointeaza argumentul (argumentul este un
  * pointer la un pointer).
  */
-void free_list(struct LinkedList **pp_list) {
-    /* TODO */
-    struct Node *currNode;
+void
+ll_free(linked_list_t** pp_list)
+{
+    ll_node_t* currNode;
 
     if (pp_list == NULL || *pp_list == NULL) {
         return;
     }
 
-    while(get_size(*pp_list) > 0) {
-        currNode = remove_nth_node(*pp_list, 0);
+    while (ll_get_size(*pp_list) > 0) {
+        currNode = ll_remove_nth_node(*pp_list, 0);
+        free(currNode->data);
         free(currNode);
     }
 
@@ -136,12 +155,14 @@ void free_list(struct LinkedList **pp_list) {
 }
 
 /*
- * Atentie! Aceasta functie poate fi apelata doar pe liste ale caror noduri STIM ca stocheaza int-uri.
- * Functia afiseaza toate valorile int stocate in nodurile din lista inlantuita separate printr-un spatiu.
+ * Atentie! Aceasta functie poate fi apelata doar pe liste ale caror noduri STIM
+ * ca stocheaza int-uri. Functia afiseaza toate valorile int stocate in nodurile
+ * din lista inlantuita separate printr-un spatiu.
  */
-void print_int_linkedlist(struct LinkedList *list) {
-    /* TODO */
-    struct Node *curr;
+void
+ll_print_int(linked_list_t* list)
+{
+    ll_node_t* curr;
 
     if (list == NULL) {
         return;
@@ -157,12 +178,14 @@ void print_int_linkedlist(struct LinkedList *list) {
 }
 
 /*
- * Atentie! Aceasta functie poate fi apelata doar pe liste ale caror noduri STIM ca stocheaza string-uri.
- * Functia afiseaza toate string-urile stocate in nodurile din lista inlantuita, separate printr-un spatiu.
+ * Atentie! Aceasta functie poate fi apelata doar pe liste ale caror noduri STIM
+ * ca stocheaza string-uri. Functia afiseaza toate string-urile stocate in
+ * nodurile din lista inlantuita, separate printr-un spatiu.
  */
-void print_string_linkedlist(struct LinkedList *list) {
-    /* TODO */
-    struct Node *curr;
+void
+ll_print_string(linked_list_t* list)
+{
+    ll_node_t* curr;
 
     if (list == NULL) {
         return;
