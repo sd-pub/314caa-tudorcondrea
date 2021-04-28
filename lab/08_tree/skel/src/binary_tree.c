@@ -36,6 +36,7 @@ b_tree_t*
 b_tree_create(size_t data_size)
 {
     b_tree_t *tree = malloc(sizeof(*tree));
+    DIE(!tree, "b_tree_create malloc");
     tree->data_size = data_size;
     tree->root = NULL;
     return tree;

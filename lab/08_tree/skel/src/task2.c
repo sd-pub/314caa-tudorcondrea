@@ -12,7 +12,9 @@
 void copy_nodes(b_node_t *source, b_node_t **dest, size_t data_size)
 {
     *dest = malloc(sizeof(b_node_t));
+    DIE(!*dest, "tree copy node malloc");
     (*dest)->data = malloc(data_size);
+    DIE(!(*dest)->data, "tree copy data malloc");
     (*dest)->left = (*dest)->right = NULL;
     memcpy((*dest)->data, source->data, data_size);
 
