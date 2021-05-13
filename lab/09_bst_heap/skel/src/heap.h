@@ -1,5 +1,5 @@
 /**
- * SD, 2020
+ * SD, 2021
  * 
  * Lab #9, BST & Heap
  * 
@@ -55,7 +55,7 @@ void heap_insert(heap_t *heap, team_t *team);
  * @heap: the heap where to search for the top element
  * @return: the top element
  */
-team_t heap_top(heap_t *heap);
+team_t *heap_top(heap_t *heap);
 
 /**
  * Remove the top element

@@ -1,5 +1,5 @@
 /**
- * SD, 2020
+ * SD, 2021
  * 
  * Lab #9, BST & Heap
  * 
@@ -13,8 +13,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define BST_DATA_LEN    50
-
 typedef struct bst_node_t bst_node_t;
 struct  bst_node_t {
     /* left child */
@@ -24,7 +22,7 @@ struct  bst_node_t {
     bst_node_t *right;
 
     /* data contained by the node */
-    char        *data;
+    void *data;
 };
 
 typedef struct bst_tree_t bst_tree_t;
@@ -32,35 +30,48 @@ struct bst_tree_t {
     /* root of the tree */
     bst_node_t  *root;
 
+     /* size of the data contained by the nodes */
+    size_t data_size;
+
     /* function used for sorting the keys */
-    int	(*cmp)(const char *key1, const char *key2);
+    int	(*cmp)(const void *key1, const void *key2);
 };
 
 /**
  * Alloc memory for a new BST
+ * @data_size: size of the data contained by the BST's nodes
  * @cmp_f: pointer to a function used for sorting
  * @return: pointer to the newly created BST
  */
-bst_tree_t *bst_tree_create(int (*cmp_f) (const char *, const char *));
+bst_tree_t *bst_tree_create(size_t data_size,
+                            int (*cmp_f)(const void *, const void *));
 
 /**
  * Insert a new element in a BST
  * @bst_tree: the BST where to insert the new element
- * @data: the team to be inserted in BST
+ * @data: the data to be inserted in BST
  */
-void bst_tree_insert(bst_tree_t *bst_tree, char *data);
+void bst_tree_insert(bst_tree_t *bst_tree, void *data);
 
 /**
  * Remove an element from a BST
- * @bst_tree: the BST where to remove from the element
+ * @bst_tree: the BST where to remove the element from
  * @data: the data that is contained by the node which has to be removed
  */
-void bst_tree_remove(bst_tree_t *bst_tree, char *data);
+void bst_tree_remove(bst_tree_t *bst_tree, void *data);
 
 /**
  * Free a BST
  * @bst_tree: the BST to be freed
+ * @free_data: function used to free the data contained by a node
  */
-void bst_tree_free(bst_tree_t *bst_tree);
+void bst_tree_free(bst_tree_t *bst_tree, void (*free_data)(void *));
+
+/**
+ * Print inorder a BST
+ * @bst_tree: the BST to be printed
+ * @print_data: function used to print the data contained by a node 
+ */
+void bst_tree_print_inorder(bst_tree_t* bst_tree, void (*print_data)(void*));
 
 #endif
