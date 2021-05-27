@@ -1,57 +1,101 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include <string.h>
 
 #include "Queue.h"
+#include "utils.h"
 
-void init_q(Queue *q) {
-    q->list = malloc(sizeof(LinkedList));
-    if (q == NULL) {
-        perror("Not enough memory to initialize the queue!");
-        exit(-1);
-    }
+queue_t*
+q_create(unsigned int data_size, unsigned int max_size)
+{
+	queue_t* q = calloc(1, sizeof(*q));
+	DIE(!q, "calloc queue failed");
 
-    init_list(q->list);
+	q->data_size = data_size;
+	q->max_size = max_size;
+
+	q->buff = malloc(max_size * sizeof(*q->buff));
+	DIE(!q->buff, "malloc buffer failed");
+
+	return q;
 }
 
-int get_size_q(Queue *q) {
-    return q->list->size;
+unsigned int
+q_get_size(queue_t* q)
+{
+	return !q ? 0 : q->size;
 }
 
-int is_empty_q(Queue *q) {
-    return get_size_q(q) == 0;
+/*
+ * Intoarce 1 daca stiva este goala si 0 in caz contrar.
+ */
+unsigned int
+q_is_empty(queue_t* q)
+{
+	return !q ? 1 : !q->size;
 }
 
-void* front(Queue *q) {
-    if (q == NULL || q->list == NULL) {
-        return NULL;
-    }
+void*
+q_front(queue_t* q)
+{
+	if (!q || !q->size)
+		return NULL;
 
-    return q->list->head->data;
+	return q->buff[q->read_idx];
 }
 
-void dequeue(Queue *q) {
-    struct Node *node;
-    if (q == NULL || q->list == NULL) {
-        return;
-    }
+bool
+q_dequeue(queue_t* q)
+{
+	if (!q || !q->size)
+		return false;
 
-    node = remove_nth_node(q->list, 0);
-    free(node);
+	free(q->buff[q->read_idx]);
+
+	q->read_idx = (q->read_idx + 1) % q->max_size;
+	--q->size;
+	return true;
 }
 
-void enqueue(Queue *q, void *new_data) {
-    add_nth_node(q->list, q->list->size, new_data);
+bool
+q_enqueue(queue_t* q, void* new_data)
+{
+	void* data;
+	if (!q || q->size == q->max_size)
+		return false;
+
+	data = malloc(q->data_size);
+	DIE(!data, "malloc data failed");
+	memcpy(data, new_data, q->data_size);
+
+	q->buff[q->write_idx] = data;
+	q->write_idx = (q->write_idx + 1) % q->max_size;
+	++q->size;
+
+	return true;
 }
 
-void clear_q(Queue *q) {
-    struct Node *node;
-    while (!is_empty_q(q)) {
-        node = remove_nth_node(q->list, 0);
-        free(node);
-    }
+void
+q_clear(queue_t* q)
+{
+	unsigned int i;
+	if (!q || !q->size)
+		return;
+
+	for (i = q->read_idx; i != q->write_idx; i = (i + 1) % q->max_size)
+		free(q->buff[i]);
+
+	q->read_idx = 0;
+	q->write_idx = 0;
+	q->size = 0;
 }
 
-void purge_q(Queue *q) {
-    clear_q(q);
-    free(q->list);
+void
+q_free(queue_t* q)
+{
+	if (!q)
+		return;
+
+	q_clear(q);
+	free(q->buff);
+	free(q);
 }

@@ -1,5 +1,5 @@
 /**
- * SD, 2020
+ * SD, 2021
  * 
  * Lab #9, BST & Heap
  * 
@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "heap.h"
+#include "utils.h"
 
 char to_lower(char c)
 {
@@ -48,29 +49,32 @@ int heap_cmp_teams(const team_t *key1, const team_t *key2)
 int main(void)
 {
     heap_t *heap;
-    team_t team, tmp_team;
-    int N, task;
+    team_t *team, *tmp_team;
+    int N = 0, task;
 
     heap = heap_create(heap_cmp_teams);
-    team.name = malloc(BUFSIZ * sizeof(char));
-    if (team.name == NULL)
-        perror("team.name malloc");
 
-    scanf("%d\n", &N);
+    team = malloc(sizeof(*team));
+    DIE(!team, "team malloc");
+    team->name = malloc(BUFSIZ * sizeof(*team->name));
+    DIE(!team->name, "team->name malloc");
+
+    scanf("%d", &N);
+    fflush(stdout);
 
     while (N--) {
         scanf("%d", &task);
     
         switch (task) {
         case 1:
-            memset(team.name, 0, BUFSIZ);
-            scanf("%s %d", team.name, &team.score);
-            heap_insert(heap, &team);
+            memset(team->name, 0, BUFSIZ);
+            scanf("%s %d", team->name, &team->score);
+            heap_insert(heap, team);
             break;
         case 2:
             if (!heap_empty(heap)) {
                 tmp_team = heap_top(heap);
-                printf("%s %d\n", tmp_team.name, tmp_team.score);
+                printf("%s %d\n", tmp_team->name, tmp_team->score);
             }
             break;
         case 3:
@@ -83,9 +87,18 @@ int main(void)
         }
     }
 
-    /* Afisati clasamentul echipelor */
+    while (!heap_empty(heap))
+    {
+        team_t *team = heap_top(heap);
+        printf("%s %d\n", team->name, team->score);
+        heap_pop(heap);
+    }
 
-    free(team.name);
+    /*for (int i = 0; i < heap->size; i++)
+        printf("%s %d\n", heap->arr[i]->name, heap->arr[i]->score);*/
+
+    free(team->name);
+    free(team);
     heap_free(heap);
 
     return 0;

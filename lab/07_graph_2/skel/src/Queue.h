@@ -1,26 +1,47 @@
-#ifndef __QUEUE_H__
-#define __QUEUE_H__
+#ifndef QUEUE_H_
+#define QUEUE_H_
 
-#include "LinkedList.h"
+#include <stdbool.h>
 
-typedef struct {
-    LinkedList *list;
-} Queue;
+typedef struct queue_t queue_t;
+struct queue_t
+{
+	/* Dimensiunea maxima a cozii */
+	unsigned int max_size;
+	/* Dimensiunea cozii */
+	unsigned int size;
+	/* Dimensiunea in octeti a tipului de date stocat in coada */
+	unsigned int data_size;
+	/* Indexul de la care se vor efectua operatiile de front si dequeue */
+	unsigned int read_idx;
+	/* Indexul de la care se vor efectua operatiile de enqueue */
+	unsigned int write_idx;
+	/* Bufferul ce stocheaza elementele cozii */
+	void **buff;
+};
 
-void init_q(Queue *q);
+queue_t *
+q_create(unsigned int data_size, unsigned int max_size);
 
-int get_size_q(Queue *q);
+unsigned int
+q_get_size(queue_t *q);
 
-int is_empty_q(Queue *q);
+unsigned int
+q_is_empty(queue_t *q);
 
-void* front(Queue *q);
+void *
+q_front(queue_t *q);
 
-void dequeue(Queue *q);
+bool
+q_dequeue(queue_t *q);
 
-void enqueue(Queue *q, void *new_data);
+bool
+q_enqueue(queue_t *q, void *new_data);
 
-void clear_q(Queue *q);
+void
+q_clear(queue_t *q);
 
-void purge_q(Queue *q);
+void
+q_free(queue_t *q);
 
-#endif /* __QUEUE_H__ */
+#endif  /* QUEUE_H_ */

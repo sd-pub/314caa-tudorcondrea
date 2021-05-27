@@ -4,80 +4,113 @@
 #include "Queue.h"
 #include "Stack.h"
 
-int main() {
-    struct Queue *q = malloc(sizeof(struct Queue));
-    struct Stack *st = malloc(sizeof(struct Stack));
-    int numbers[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int crt_val;
+int
+main(void)
+{
+	queue_t *q;
+	stack_t *st = st_create(sizeof(int));
+	int numbers[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	int crt_val;
 
-    printf("-------------------------------- Test stack --------------------------------\n");
-    init_stack(st);
-    push_stack(st, &numbers[10]);
+	printf("-------------------------------- Test stack --------------------------------\n");
+	st_push(st, &numbers[10]);
 
-    /* Test push & size */
-    printf("#1:\nOutput: size: %d\nOutput asteptat: size: 1\n", get_size_stack(st));
+	/* Test push & size */
+	printf(
+		"#1:\nOutput: size: %d\nOutput asteptat: size: 1\n",
+		st_get_size(st)
+	);
 
-    /* Test peek */
-    crt_val = *(int *)peek_stack(st);
-    printf("#2:\nOutput: %d\nOutput asteptat: 10\n", crt_val);
+	/* Test peek */
+	crt_val = *(int *)st_peek(st);
+	printf("#2:\nOutput: %d\nOutput asteptat: 10\n", crt_val);
 
-    /* Test pop */
-    crt_val = *(int *)peek_stack(st);
-    pop_stack(st);
-    printf("#3:\nOutput: value: %d size: %d\nOutput asteptat: value: 10 size: 0\n", crt_val, get_size_stack(st));
+	/* Test pop */
+	crt_val = *(int *)st_peek(st);
+	st_pop(st);
+	printf(
+		"#3:\nOutput: value: %d size: %d\nOutput asteptat: value: 10 size: 0\n",
+		crt_val,
+		st_get_size(st)
+	);
 
-    push_stack(st, &numbers[9]);
-    push_stack(st, &numbers[8]);
-    push_stack(st, &numbers[7]);
+	st_push(st, &numbers[9]);
+	st_push(st, &numbers[8]);
+	st_push(st, &numbers[7]);
 
-    /* Test multiple pushes */
-    printf("#4:\nOutput: size: %d top elem: %d\nOutput asteptat: size: 3 top elem: 7\n", get_size_stack(st), *(int *)peek_stack(st));
+	/* Test multiple pushes */
+	printf(
+		"#4:\nOutput: size: %d top elem: %d\nOutput asteptat: size: 3 top elem: 7\n",
+		st_get_size(st),
+		*(int *)st_peek(st)
+	);
 
-    /* Test multiple pops */
-    printf("#5:\nOutput: ");
-    while (!is_empty_stack(st)) {
-        printf("%d ", *(int *)peek_stack(st));
-        pop_stack(st);
-    }
-    printf("size: %d", get_size_stack(st));
-    printf("\nOutput asteptat: 7 8 9 size: 0\n");
+	/* Test multiple pops */
+	printf("#5:\nOutput: ");
+	while (!st_is_empty(st)) {
+		printf("%d ", *(int *)st_peek(st));
+		st_pop(st);
+	}
+	printf("size: %d", st_get_size(st));
+	printf("\nOutput asteptat: 7 8 9 size: 0\n");
 
-    purge_stack(st);
-    free(st);
+	st_free(st);
 
-    printf("\n\n-------------------------------- Test queue --------------------------------\n");
-    init_q(q);
-    enqueue(q, &numbers[5]);
+	printf("\n\n-------------------------------- Test queue --------------------------------\n");
+	q = q_create(sizeof(int), 3);
+	q_enqueue(q, &numbers[5]);
 
-    /* Test enqueue & size */
-    printf("#1:\nOutput: size: %d\nOutput asteptat: size: 1\n", get_size_q(q));
+	/* Test q_enqueue & size */
+	printf(
+		"#1:\nOutput: size: %d\nOutput asteptat: size: 1\n",
+		q_get_size(q)
+	);
 
-    /* Test front */
-    crt_val = *(int *)front(q);
-    printf("#2:\nOutput: %d\nOutput asteptat: 5\n", crt_val);
+	/* Test q_front */
+	crt_val = *(int *)q_front(q);
+	printf("#2:\nOutput: %d\nOutput asteptat: 5\n", crt_val);
 
-    /* Test dequeue */
-    crt_val = *(int *)front(q);
-    dequeue(q);
-    printf("#3:\nOutput: value: %d size: %d\nOutput asteptat: value: 5 size: 0\n", crt_val, get_size_q(q));
+	/* Test q_dequeue */
+	crt_val = *(int *)q_front(q);
+	q_dequeue(q);
+	printf(
+		"#3:\nOutput: value: %d size: %d\nOutput asteptat: value: 5 size: 0\n",
+		crt_val,
+		q_get_size(q)
+	);
 
-    enqueue(q, &numbers[2]);
-    enqueue(q, &numbers[3]);
-    enqueue(q, &numbers[4]);
+	q_enqueue(q, &numbers[2]);
+	q_enqueue(q, &numbers[3]);
+	q_enqueue(q, &numbers[4]);
 
-    /* Test multiple pushes */
-    printf("#4:\nOutput: size: %d top elem: %d\nOutput asteptat: size: 3 front elem: 2\n", get_size_q(q), *(int *)front(q));
+	/* Test multiple pushes */
+	printf(
+		"#4:\nOutput: size: %d top elem: %d\nOutput asteptat: size: 3 q_front elem: 2\n",
+		q_get_size(q),
+		*(int *)q_front(q)
+	);
 
-    /* Test multiple pops */
-    printf("#5:\nOutput: ");
-    while (!is_empty_q(q)) {
-        printf("%d ", *(int *)front(q));
-        dequeue(q);
-    }
-    printf("size: %d", get_size_q(q));
-    printf("\nOutput asteptat: 2 3 4 size: 0\n");
+	/* Test enqueue above limit */
+	printf(
+		"#5\nOutput: q_enqueue result: %d\nOutput asteptat: q_enqueue result: 0\n",
+		q_enqueue(q, &numbers[5])
+	);
 
-    purge_q(q);
-    free(q);
-    return 0;
+	/* Test multiple pops */
+	printf("#6:\nOutput: ");
+	while (!q_is_empty(q)) {
+		printf("%d ", *(int *)q_front(q));
+		q_dequeue(q);
+	}
+	printf("size: %d", q_get_size(q));
+	printf("\nOutput asteptat: 2 3 4 size: 0\n");
+
+	/* Test dequeue when size is 0 */
+	printf(
+		"#7\nOutput: q_dequeue result: %d\nOutput asteptat: q_dequeue result: 0\n",
+		q_dequeue(q)
+	);
+
+	q_free(q);
+	return 0;
 }
