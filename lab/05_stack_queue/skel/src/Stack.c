@@ -1,37 +1,71 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "Stack.h"
+#include "utils.h"
 
-void init_stack(struct Stack *stack) {
-    stack->list = malloc(sizeof(struct LinkedList));
-    init_list(stack->list);
+stack_t *
+st_create(unsigned int data_size)
+{
+	stack_t *stack = malloc(sizeof(stack_t));
+	DIE(!stack, "stack malloc");
+	stack->list = ll_create(data_size);
+	return stack;
 }
 
-int get_size_stack(struct Stack *stack) {
-    /* TODO */
+unsigned int
+st_get_size(stack_t *st)
+{
+	return st->list->size;
 }
 
-int is_empty_stack(struct Stack *stack) {
-    /* TODO */
+/*
+ * Intoarce 1 daca stiva este goala si 0 in caz contrar.
+ */
+unsigned int
+st_is_empty(stack_t *st)
+{
+	if (ll_get_size(st->list) == 0)
+		return 1;
+	return 0;
 }
 
-void* peek_stack(struct Stack *stack) {
-    /* TODO */
+void *
+st_peek(stack_t *st)
+{
+	if (!st)
+		return NULL;
+	return st->list->head->data;
 }
 
-void pop_stack(struct Stack *stack) {
-    /* TODO */
+void
+st_pop(stack_t *st)
+{
+	ll_node_t *q = ll_remove_nth_node(st->list, 0);
+	free(q->data);
+	free(q);
 }
 
-void push_stack(struct Stack *stack, void *new_data) {
-    /* TODO */
+void
+st_push(stack_t *st, void *new_data)
+{
+	ll_add_nth_node(st->list, 0, new_data);
 }
 
-void clear_stack(struct Stack *stack) {
-    /* TODO */
+void
+st_clear(stack_t *st)
+{
+	int n = st->list->size;
+	while(n > 0)
+	{
+		st_pop(st);
+		n--;
+	}
 }
 
-void purge_stack(struct Stack *stack) {
-    /* TODO */
+void
+st_free(stack_t *st)
+{
+	st_clear(st);
+	free(st->list);
+	free(st);
 }
