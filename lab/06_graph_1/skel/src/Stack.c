@@ -1,58 +1,84 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "Stack.h"
+#include "utils.h"
 
-void init_stack(Stack *stack) {
-    stack->list = malloc(sizeof(LinkedList));
-    if (stack == NULL) {
-        perror("Not enough memory to initialize the queue!");
-        exit(-1);
-    }
+stack_t*
+st_create(unsigned int data_size)
+{
+	stack_t* st = malloc(sizeof(*st));
+	DIE(!st, "malloc st failed");
+	st->list = ll_create(data_size);
+	DIE(!st->list, "malloc list failed");
 
-    init_list(stack->list);
+	return st;
 }
 
-int get_size_stack(Stack *stack) {
-    return stack->list->size;
+unsigned int
+st_get_size(stack_t* st)
+{
+	if (!st || !st->list)
+		return 0;
+	return st->list->size;
 }
 
-int is_empty_stack(Stack *stack) {
-    return get_size_stack(stack) == 0;
+/*
+ * Intoarce 1 daca stiva este goala si 0 in caz contrar.
+ */
+unsigned int
+st_is_empty(stack_t* st)
+{
+	/* TODO */
+	return !st || !st->list || !st->list->size;
 }
 
-void* peek_stack(Stack *stack) {
-    if (stack == NULL || stack->list == NULL) {
-        return NULL;
-    }
+void*
+st_peek(stack_t* st)
+{
+	/* TODO */
+	if (!st || !st->list || !st->list->size)
+		return NULL;
 
-    return stack->list->tail->data;
+	return st->list->head->data;
 }
 
-void pop_stack(Stack *stack) {
-    struct Node *node;
+void
+st_pop(stack_t* st)
+{
+	/* TODO */
+	if (!st || !st->list)
+		return;
 
-    if (stack == NULL || stack->list == NULL) {
-        return;
-    }
-
-    node = remove_nth_node(stack->list, stack->list->size - 1);
-    free(node);
+	ll_remove_nth_node(st->list, 0);
 }
 
-void push_stack(Stack *stack, void *new_data) {
-    add_nth_node(stack->list, stack->list->size, new_data);
+void
+st_push(stack_t* st, void* new_data)
+{
+	/* TODO */
+	if (!st || !st->list)
+		return;
+
+	ll_add_nth_node(st->list, 0, new_data);
 }
 
-void clear_stack(Stack *stack) {
-    struct Node *node;
-    while (!is_empty_stack(stack)) {
-        node = remove_nth_node(stack->list, 0);
-        free(node);
-    }
+void
+st_clear(stack_t* st)
+{
+	/* TODO */
+	if (!st || !st->list)
+		return;
+
+	ll_free(&st->list);
 }
 
-void purge_stack(Stack *stack) {
-    clear_stack(stack);
-    free(stack->list);
+void
+st_free(stack_t* st)
+{
+	/* TODO */
+	if (!st || !st->list)
+		return;
+
+	ll_free(&st->list);
+	free(st);
 }
